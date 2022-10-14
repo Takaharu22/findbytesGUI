@@ -25,7 +25,7 @@ def port():
     oldipscode.insert(tk.END,oldcode)
     oldfile = oldfileL.cget("text")
     newfile= newfileL.cget("text")
-    cmd = "python findBytes.py" + " " + oldfile + " " + newfile  + " " + oldcode
+    cmd = "python findbytes.py" + " " + oldfile + " " + newfile  + " " + oldcode
     print(cmd)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     ncode = p.stdout.read()
