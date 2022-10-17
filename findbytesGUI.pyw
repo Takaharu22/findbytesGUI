@@ -23,14 +23,17 @@ def port():
     oldipscode.delete(0, tk.END)
     newipscode.delete(0, tk.END)
     oldipscode.insert(tk.END,oldcode)
+    oc = oldcode[:8]
     oldfile = oldfileL.cget("text")
     newfile= newfileL.cget("text")
-    cmd = "python findbytes.py" + " " + oldfile + " " + newfile  + " " + oldcode
+    cmd = "python findbytes.py" + " " + oldfile + " " + newfile  + " " + oc
     print(cmd)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     ncode = p.stdout.read()
-    print(ncode)
-    newipscode.insert(tk.END,ncode)
+    new = f'{ncode[:8]}' + " " + f'{oldcode[9:]}'
+    newcode = new.replace("'", '')
+    newco = newcode.replace("b", '')
+    newipscode.insert(tk.END,newco)
     newipscode.configure(state='readonly')
 
 root = tk.Tk()
