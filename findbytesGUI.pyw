@@ -1,15 +1,20 @@
 ﻿import subprocess
 import sys
+import os
 import tkinter as tk
 from tkinter import filedialog
 
 def oldexefs():
-    oldfile = tk.filedialog.askopenfilename(title="移植元のバージョンのファイルを選択")
+    oldfile = tk.filedialog.askopenfilename(title = "移植元のバージョンのファイルを選択")
     oldfileL['text'] = oldfile
     
 def newexefs():
-    newfile = tk.filedialog.askopenfilename(title="最新のバージョンのファイルを選択")
+    newfile = tk.filedialog.askopenfilename(title = "最新のバージョンのファイルを選択")
     newfileL['text'] = newfile
+    
+def inpchtxt():
+    pchtxt = tk.filedialog.askopenfilename(title = "移植元のpchtxtのファイルを選択")
+    pchtxtfileL['text'] = pchtxt
     
 def reset():
     newipscode.configure(state='normal')
@@ -25,7 +30,7 @@ def port():
     oldipscode.insert(tk.END,oldcode)
     oc = oldcode[:8]
     oldfile = oldfileL.cget("text")
-    newfile= newfileL.cget("text")
+    newfile = newfileL.cget("text")
     cmd = "python findbytes.py" + " " + oldfile + " " + newfile  + " " + oc
     print(cmd)
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
@@ -35,7 +40,39 @@ def port():
     newco = newcode.replace("b", '')
     newipscode.insert(tk.END,newco)
     newipscode.configure(state='readonly')
-
+    
+def portpchtxt():
+    pchtxt = pchtxtfileL.cget("text")
+    oldfile = oldfileL.cget("text")
+    newfile = newfileL.cget("text")
+    f = open(pchtxt, 'r', encoding='UTF-8')
+    while True:
+        data = f.readline()
+        if data == '':
+            break
+        else:
+            if ' ' in data:
+                if data.find(' ') == 8:
+                    oc = data[:8]
+                    value = data[8:]
+                    cmd = "python findbytes.py" + " " + oldfile + " " + newfile  + " " + oc
+                    print(cmd)
+                    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                    ncode = p.stdout.read()
+                    new = f'{ncode[:8]}' + f'{value}'
+                    newcode = new.replace("'", '')
+                    newco = newcode.replace("b", '')
+                    fn = open("new.pchtxt", 'a', encoding='UTF-8')    
+                    fn.write(newco)
+                else:
+                    fn = open("new.pchtxt", 'a', encoding='UTF-8')    
+                    fn.write(data)
+            else:
+                fn = open("new.pchtxt", 'a', encoding='UTF-8')    
+                fn.write(data)
+    f.close()
+    fn.close()
+    
 root = tk.Tk()
 root.geometry('720x500')
 root.title("findbytesGUI")
@@ -55,8 +92,14 @@ oldfilebutton = tk.Button(root, text = '移植元のファイル', command = old
 oldfilebutton.place(x=10, y=25)
 newfilebutton = tk.Button(root, text = '最新のファイル', command = newexefs)
 newfilebutton.place(x=10, y=85)
+pchtxtbutton = tk.Button(root, text = 'pchtxt', command = inpchtxt)
+pchtxtbutton.place(x=370, y=25)
+pchtxtbutton = tk.Button(root, text = 'pchtxt移植', command = portpchtxt)
+pchtxtbutton.place(x=370, y=85)
 oldfileL = tk.Label()
-oldfileL.place(x=120, y=25)
+oldfileL.place(x=100, y=25)
 newfileL = tk.Label()
-newfileL.place(x=120, y=85)
+newfileL.place(x=90, y=85)
+pchtxtfileL = tk.Label()
+pchtxtfileL.place(x=420, y=25)
 root.mainloop()
