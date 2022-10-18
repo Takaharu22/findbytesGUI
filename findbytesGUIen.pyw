@@ -1,6 +1,7 @@
 ﻿import subprocess
 import sys
 import os
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog
 
@@ -22,6 +23,41 @@ def reset():
     newipscode.delete(0, tk.END)
     newipscode.configure(state='readonly')
     
+def cr_window():
+    dlw = tk.Toplevel()
+    dlw.resizable(False, False)
+    def dl():
+        url = 'https://gist.github.com/3096/ffd6d257f148aab0b74bfc50dfe43e80'
+        webbrowser.open(url, new=0, autoraise=True)
+        dlw.destroy()
+        
+    def close():
+        dlw.destroy()
+
+    dlw.geometry("300x100")
+    label_sub = tk.Label(dlw, text="findbytes not found Do you want to download it?")
+    label_sub.pack()
+    yesbutton = tk.Button(dlw, text = 'yes', command = dl)
+    yesbutton.place(x=70, y=50)
+    nobutton = tk.Button(dlw, text = 'no', command = close)
+    nobutton.place(x=180, y=50)
+    
+def dl_window():
+    is_file = os.path.isfile('findbytes.py')
+    if not is_file:
+        cr_window()
+
+    else:
+        port()
+
+def dl_window2():
+    is_file = os.path.isfile('findbytes.py')
+    if not is_file:
+        cr_window()
+
+    else:
+        portpchtxt()
+       
 def port():
     newipscode.configure(state='normal')
     oldcode = oldipscode.get()

@@ -1,9 +1,10 @@
 ﻿import subprocess
 import sys
 import os
+import webbrowser
 import tkinter as tk
 from tkinter import filedialog
-
+    
 def oldexefs():
     oldfile = tk.filedialog.askopenfilename(title = "移植元のバージョンのファイルを選択")
     oldfileL['text'] = oldfile
@@ -21,6 +22,41 @@ def reset():
     oldipscode.delete(0, tk.END)
     newipscode.delete(0, tk.END)
     newipscode.configure(state='readonly')
+
+def cr_window():
+    dlw = tk.Toplevel()
+    dlw.resizable(False, False)
+    def dl():
+        url = 'https://gist.github.com/3096/ffd6d257f148aab0b74bfc50dfe43e80'
+        webbrowser.open(url, new=0, autoraise=True)
+        dlw.destroy()
+        
+    def close():
+        dlw.destroy()
+
+    dlw.geometry("300x100")
+    label_sub = tk.Label(dlw, text="findbytesが見つかりませんダウンロードしますか？")
+    label_sub.pack()
+    yesbutton = tk.Button(dlw, text = 'はい', command = dl)
+    yesbutton.place(x=70, y=50)
+    nobutton = tk.Button(dlw, text = 'いいえ', command = close)
+    nobutton.place(x=180, y=50)
+    
+def dl_window():
+    is_file = os.path.isfile('findbytes.py')
+    if not is_file:
+        cr_window()
+
+    else:
+        port()
+
+def dl_window2():
+    is_file = os.path.isfile('findbytes.py')
+    if not is_file:
+        cr_window()
+
+    else:
+        portpchtxt()
     
 def port():
     newipscode.configure(state='normal')
@@ -78,7 +114,7 @@ root.geometry('720x500')
 root.title("findbytesGUI")
 root.resizable(False, False)
 resetbutton = tk.Button(root, text = 'リセット', height = 3, command = reset).pack(fill = 'x', padx = 20, pady = 20, side = 'bottom')
-findbutton = tk.Button(root, text = '移植', height = 5, command = port).pack(fill = 'x', padx = 20, pady = 20, side = 'bottom')
+findbutton = tk.Button(root, text = '移植', height = 5, command = dl_window).pack(fill = 'x', padx = 20, pady = 20, side = 'bottom')
 oldipscode = tk.Entry(root)
 oldipscode.place(x = 10, y = 180, height = 100, width = 345)
 newipscode = tk.Entry(root)
@@ -94,7 +130,7 @@ newfilebutton = tk.Button(root, text = '最新のファイル', command = newexe
 newfilebutton.place(x=10, y=85)
 pchtxtbutton = tk.Button(root, text = 'pchtxt', command = inpchtxt)
 pchtxtbutton.place(x=370, y=25)
-pchtxtbutton = tk.Button(root, text = 'pchtxt移植', command = portpchtxt)
+pchtxtbutton = tk.Button(root, text = 'pchtxt移植', command = dl_window2)
 pchtxtbutton.place(x=370, y=85)
 oldfileL = tk.Label()
 oldfileL.place(x=100, y=25)
